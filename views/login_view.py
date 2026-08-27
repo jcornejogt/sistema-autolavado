@@ -1,9 +1,16 @@
 import customtkinter as ctk
+import sys
 from tkinter import messagebox
 from PIL import Image
+from pathlib import Path
 
 from controllers.user_controller import UserController
 from license import dias_restantes
+
+
+def ruta_recurso(ruta):
+    base = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent.parent))
+    return base / ruta
 
 
 class LoginView(ctk.CTkFrame):
@@ -35,7 +42,7 @@ class LoginView(ctk.CTkFrame):
         contenedor.pack_propagate(False)
 
         # LOGO
-        logo = Image.open("assets/cw-logo.jpeg")
+        logo = Image.open(ruta_recurso("assets/cw-logo.jpeg"))
 
         logo_ctk = ctk.CTkImage(
             light_image=logo,

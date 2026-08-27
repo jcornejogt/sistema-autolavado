@@ -32,6 +32,7 @@ jobs:
           pyinstaller \
             --windowed \
             --name "SistemaAutolavado" \
+            --add-data "assets:assets" \
             app.py
 
       - name: Comprimir aplicación

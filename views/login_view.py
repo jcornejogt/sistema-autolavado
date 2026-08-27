@@ -3,6 +3,7 @@ from tkinter import messagebox
 from PIL import Image
 
 from controllers.user_controller import UserController
+from license import dias_restantes
 
 
 class LoginView(ctk.CTkFrame):
@@ -96,6 +97,14 @@ class LoginView(ctk.CTkFrame):
             width=260,
             command=self.iniciar_sesion
         ).pack(pady=5)
+
+        dias = dias_restantes()
+
+        ctk.CTkLabel(
+            contenedor,
+            text=f"Licencia válida por {dias} días",
+            font=("Arial", 12)
+        ).pack(pady=(10, 0))
 
         self.usuario_entry.focus()
 

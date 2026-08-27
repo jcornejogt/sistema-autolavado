@@ -1,4 +1,21 @@
 import customtkinter as ctk
+from tkinter import messagebox
+
+from license import licencia_valida
+
+
+if not licencia_valida():
+
+    root = ctk.CTk()
+    root.withdraw()
+
+    messagebox.showerror(
+        "Licencia vencida",
+        "La licencia de este sistema ha expirado."
+    )
+
+    root.destroy()
+    exit()
 
 from database.database import Base, engine
 

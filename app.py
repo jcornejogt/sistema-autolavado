@@ -48,7 +48,8 @@ class App(ctk.CTk):
 
         self.title("Sistema Autolavado")
         self.geometry("1200x700")
-        self.resizable(False, False)
+        self.resizable(True, True)
+        self.state("zoomed")
 
         self.mostrar_login()
 

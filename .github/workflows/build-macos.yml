@@ -2,19 +2,72 @@ name: Build macOS
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to create (optional). If empty, a timestamped tag will be generated.'
+        required: false
+        default: ''
+      release_name:
+        description: 'Release title (optional)'
+        required: false
+        default: ''
+      release_body:
+        description: 'Release notes (optional)'
+        required: false
+        default: ''
+      draft:
+        description: 'Create draft release? (true/false)'
+        required: false
+        default: 'false'
+      prerelease:
+        description: 'Create prerelease? (true/false)'
+        required: false
+        default: 'false'
   push:
     tags:
       - "v*"
 
+permissions:
+  contents: write
+
 jobs:
   build-macos:
-
     runs-on: macos-latest
 
     steps:
 
       - name: Descargar código
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determinar/crear tag
+        id: determine_tag
+        run: |
+          set -e
+          # Si se ejecuta manualmente, usa el input o crea uno timestamp; si no, usa el tag de la ref si existe.
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+            if [ -z "$TAG" ]; then
+              TAG="v$(date +'%Y%m%d%H%M%S')"
+            fi
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag -a "$TAG" -m "Release $TAG"
+            git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+            git push origin "$TAG"
+          elif [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            TAG="${GITHUB_REF#refs/tags/}"
+          else
+            # No es push de tag ni workflow_dispatch con tag -> genera un tag y púlsalo
+            TAG="v$(date +'%Y%m%d%H%M%S')"
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag -a "$TAG" -m "Release $TAG"
+            git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+            git push origin "$TAG"
+          fi
+          echo "tag_name=$TAG" >> $GITHUB_OUTPUT
 
       - name: Configurar Python
         uses: actions/setup-python@v5
@@ -47,11 +100,13 @@ jobs:
           path: dist/SistemaAutolavado-macOS.zip
 
       - name: Crear Release
-        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
         with:
           files: dist/SistemaAutolavado-macOS.zip
-          draft: false
-          prerelease: false
+          tag_name: ${{ steps.determine_tag.outputs.tag_name }}
+          name: ${{ steps.determine_tag.outputs.tag_name }}
+          body: ${{ github.event.inputs.release_body }}
+          draft: ${{ github.event.inputs.draft }}
+          prerelease: ${{ github.event.inputs.prerelease }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

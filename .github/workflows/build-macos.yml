@@ -45,3 +45,13 @@ jobs:
         with:
           name: SistemaAutolavado-macOS
           path: dist/SistemaAutolavado-macOS.zip
+
+      - name: Crear Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/SistemaAutolavado-macOS.zip
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

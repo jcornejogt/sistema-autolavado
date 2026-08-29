@@ -1,23 +1,15 @@
 from datetime import datetime, timedelta
 
-FECHA_VENCIMIENTO = (datetime.now().date() + timedelta(days=7)).strftime("%Y-%m-%d")
+FECHA_VENCIMIENTO = (datetime.now().date() + timedelta(days=365)).strftime("%Y-%m-%d")
 
 
 def licencia_valida():
     fecha_actual = datetime.now().date()
-    fecha_vencimiento = datetime.strptime(
-        FECHA_VENCIMIENTO,
-        "%Y-%m-%d"
-    ).date()
-
+    fecha_vencimiento = datetime.strptime(FECHA_VENCIMIENTO, "%Y-%m-%d").date()
     return fecha_actual <= fecha_vencimiento
 
 
 def dias_restantes():
     fecha_actual = datetime.now().date()
-    fecha_vencimiento = datetime.strptime(
-        FECHA_VENCIMIENTO,
-        "%Y-%m-%d"
-    ).date()
-
+    fecha_vencimiento = datetime.strptime(FECHA_VENCIMIENTO, "%Y-%m-%d").date()
     return (fecha_vencimiento - fecha_actual).days

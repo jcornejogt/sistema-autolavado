@@ -7,7 +7,12 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 def get_base_dir():
 
     if getattr(sys, 'frozen', False):
-        return os.path.dirname(sys.executable)
+        base_dir = os.path.join(
+            os.environ.get('LOCALAPPDATA', os.path.expanduser('~')),
+            'SistemaAutolavado'
+        )
+        os.makedirs(base_dir, exist_ok=True)
+        return base_dir
     else:
         return os.path.dirname(os.path.abspath(__file__))
 

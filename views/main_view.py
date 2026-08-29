@@ -8,6 +8,8 @@ from views.employees_view import EmployeesView
 from views.sales_view import SalesView
 from views.reports_view import ReportsView
 from views.users_view import UsersView
+from views.clientes_view import ClientesView
+from views.cuentas_credito_view import CuentasCreditoView
 
 
 class MainView(ctk.CTkFrame):
@@ -42,7 +44,9 @@ class MainView(ctk.CTkFrame):
         botones = [
             ("🏠 Dashboard", self.dashboard, None),
             ("🛒 Ventas", self.ventas, None),
-            ("🚿 Servicios", self.servicios, ["Admin"]),
+            ("� Clientes", self.clientes, None),
+            ("💳 Cuentas / Crédito", self.cuentas_credito, None),
+            ("�🚿 Servicios", self.servicios, ["Admin"]),
             ("🧴 Accesorios", self.accesorios, ["Admin"]),
             ("👷 Empleados", self.empleados, ["Admin"]),
             ("📊 Reportes", self.reportes, ["Admin"]),
@@ -106,6 +110,16 @@ class MainView(ctk.CTkFrame):
 
         self.limpiar_contenido()
         SalesView(self.contenido).pack(fill="both", expand=True)
+
+    def clientes(self):
+
+        self.limpiar_contenido()
+        ClientesView(self.contenido).pack(fill="both", expand=True)
+
+    def cuentas_credito(self):
+
+        self.limpiar_contenido()
+        CuentasCreditoView(self.contenido).pack(fill="both", expand=True)
 
     def servicios(self):
 

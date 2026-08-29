@@ -6,10 +6,16 @@ import sys
 
 from license import licencia_valida
 
-# Configurar logging
-log_dir = os.path.dirname(sys.executable) if getattr(sys, 'frozen', False) else os.path.dirname(os.path.abspath(__file__))
+# Configurar logging en una carpeta escribible
+if getattr(sys, 'frozen', False):
+    base_dir = os.path.join(os.environ.get('LOCALAPPDATA', os.path.expanduser('~')), 'SistemaAutolavado')
+else:
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+
+os.makedirs(base_dir, exist_ok=True)
+
 logging.basicConfig(
-    filename=os.path.join(log_dir, 'app.log'),
+    filename=os.path.join(base_dir, 'app.log'),
     level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
@@ -36,6 +42,8 @@ from models.servicio import Servicio
 from models.accesorio import Accesorio
 from models.sale import Sale
 from models.sale_detail import SaleDetail
+from models.cliente import Cliente
+from models.cuenta_credito import CuentaCredito, CuentaCreditoDetalle
 
 from controllers.user_controller import UserController
 

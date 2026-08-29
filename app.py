@@ -1,8 +1,18 @@
 import customtkinter as ctk
 from tkinter import messagebox
+import logging
+import os
+import sys
 
 from license import licencia_valida
 
+# Configurar logging
+log_dir = os.path.dirname(sys.executable) if getattr(sys, 'frozen', False) else os.path.dirname(os.path.abspath(__file__))
+logging.basicConfig(
+    filename=os.path.join(log_dir, 'app.log'),
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
 if not licencia_valida():
 
@@ -76,6 +86,15 @@ class App(ctk.CTk):
 
 
 if __name__ == "__main__":
-
-    app = App()
-    app.mainloop()
+    try:
+        app = App()
+        app.mainloop()
+    except Exception as e:
+        logging.error(f"Error en la aplicación: {e}", exc_info=True)
+        root = ctk.CTk()
+        root.withdraw()
+        messagebox.showerror(
+            "Error",
+            f"Ocurrió un error en la aplicación:\n\n{str(e)}\n\nRevisa el archivo app.log para más detalles."
+        )
+        root.destroy()

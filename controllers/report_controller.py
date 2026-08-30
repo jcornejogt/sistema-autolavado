@@ -43,6 +43,7 @@ class ReportController:
                 total_vendido = sum(v.total for v in ventas_emp)
 
                 comision_total = 0
+                servicios = {}
 
                 for v in ventas_emp:
 
@@ -50,13 +51,28 @@ class ReportController:
                         SaleDetail.sale_id == v.id
                     ).all()
 
-                    comision_total += sum(d.comision for d in detalles)
+                    for d in detalles:
+                        if d.tipo == "servicio":
+                            comision_total += d.comision
+                            nombre_servicio = d.nombre
+                            if nombre_servicio not in servicios:
+                                servicios[nombre_servicio] = {
+                                    "nombre": nombre_servicio,
+                                    "cantidad": 0,
+                                    "subtotal": 0.0
+                                }
+                            servicios[nombre_servicio]["cantidad"] += d.cantidad
+                            servicios[nombre_servicio]["subtotal"] += d.subtotal
 
                 por_empleado.append({
                     "nombre": emp.nombre,
                     "cantidad_ventas": len(ventas_emp),
                     "total_vendido": total_vendido,
-                    "comision": comision_total
+                    "comision": comision_total,
+                    "servicios": sorted(
+                        servicios.values(),
+                        key=lambda x: x["nombre"]
+                    )
                 })
 
             por_empleado.sort(

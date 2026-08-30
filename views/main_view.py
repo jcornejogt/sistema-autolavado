@@ -1,5 +1,9 @@
 import customtkinter as ctk
 from datetime import datetime
+from pathlib import Path
+import sys
+
+from PIL import Image
 
 from views.dashboard_view import DashboardView
 from views.servicios_view import ServiciosView
@@ -10,6 +14,11 @@ from views.reports_view import ReportsView
 from views.users_view import UsersView
 from views.clientes_view import ClientesView
 from views.cuentas_credito_view import CuentasCreditoView
+
+
+def ruta_recurso(ruta):
+    base = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent.parent))
+    return base / ruta
 
 
 class MainView(ctk.CTkFrame):
@@ -35,9 +44,26 @@ class MainView(ctk.CTkFrame):
         self.menu = ctk.CTkFrame(self, width=220)
         self.menu.pack(side="left", fill="y")
 
+        try:
+            logo = Image.open(ruta_recurso("assets/cw-logo.jpeg"))
+            logo_ctk = ctk.CTkImage(
+                light_image=logo,
+                dark_image=logo,
+                size=(86, 86)
+            )
+            ctk.CTkLabel(
+                self.menu,
+                image=logo_ctk,
+                text="",
+                width=86,
+                height=86
+            ).pack(pady=(18, 8))
+        except Exception:
+            pass
+
         ctk.CTkLabel(
-            self.menu, text="🚗 Autolavado", font=("Arial", 22, "bold")
-        ).pack(pady=30)
+            self.menu, text="🚗 Autolavado", font=("Arial", 24, "bold")
+        ).pack(pady=(0, 20))
 
         rol_actual = self.usuario_actual["rol"]
 
@@ -59,7 +85,12 @@ class MainView(ctk.CTkFrame):
                 continue
 
             ctk.CTkButton(
-                self.menu, text=texto, width=180, height=40, command=comando
+                self.menu,
+                text=texto,
+                width=180,
+                height=42,
+                command=comando,
+                font=("Arial", 14, "bold")
             ).pack(pady=8, padx=20)
 
     def crear_contenedor(self):

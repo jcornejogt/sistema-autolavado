@@ -20,14 +20,14 @@ class CuentasCreditoView(ctk.CTkFrame):
             font=("Arial", 28, "bold")
         ).pack(pady=20)
 
-        self.cargar_clientes()
-
         top = ctk.CTkFrame(self)
         top.pack(fill="x", padx=20)
 
         ctk.CTkLabel(top, text="Cliente:").grid(row=0, column=0, padx=10, pady=8, sticky="w")
         self.cliente_combo = ctk.CTkComboBox(top, width=280, values=[])
         self.cliente_combo.grid(row=0, column=1, padx=10, pady=8)
+
+        self.cargar_clientes()
 
         ctk.CTkLabel(top, text="Descripción:").grid(row=1, column=0, padx=10, pady=8, sticky="w")
         self.descripcion_entry = ctk.CTkEntry(top, width=280)

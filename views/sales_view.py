@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, simpledialog
 
 from controllers.employee_controller import EmployeeController
 from controllers.servicio_controller import ServicioController
@@ -51,6 +51,17 @@ class SalesView(ctk.CTkFrame):
         self.servicios_tree.column("nombre", width=140)
         self.servicios_tree.column("precio", width=70)
         self.servicios_tree.pack(padx=10)
+
+        servicio_cant_frame = ctk.CTkFrame(izquierda, fg_color="transparent")
+        servicio_cant_frame.pack(pady=(5, 0))
+
+        ctk.CTkLabel(servicio_cant_frame, text="Cantidad:").pack(
+            side="left", padx=5
+        )
+
+        self.servicio_cantidad_entry = ctk.CTkEntry(servicio_cant_frame, width=60)
+        self.servicio_cantidad_entry.insert(0, "1")
+        self.servicio_cantidad_entry.pack(side="left")
 
         ctk.CTkButton(
             izquierda, text="Agregar lavado ➕", command=self.agregar_servicio
@@ -112,6 +123,23 @@ class SalesView(ctk.CTkFrame):
         )
         self.total_label.pack(pady=15)
 
+        acciones = ctk.CTkFrame(derecha, fg_color="transparent")
+        acciones.pack(pady=(0, 10))
+
+        ctk.CTkButton(
+            acciones,
+            text="✏️ Editar cantidad",
+            command=self.editar_item
+        ).pack(side="left", padx=5)
+
+        ctk.CTkButton(
+            acciones,
+            text="🗑️ Eliminar item",
+            fg_color="red",
+            hover_color="#990000",
+            command=self.eliminar_item
+        ).pack(side="left", padx=5)
+
         ctk.CTkButton(
             derecha,
             text="Finalizar Venta",
@@ -163,6 +191,16 @@ class SalesView(ctk.CTkFrame):
             messagebox.showwarning("Venta", "Seleccione un servicio de lavado.")
             return
 
+        try:
+            cantidad = int(self.servicio_cantidad_entry.get())
+        except ValueError:
+            messagebox.showerror("Error", "La cantidad del servicio debe ser un número entero.")
+            return
+
+        if cantidad <= 0:
+            messagebox.showwarning("Venta", "La cantidad del servicio debe ser mayor a cero.")
+            return
+
         datos = self.servicios_tree.item(seleccionado)["values"]
 
         item = {
@@ -170,7 +208,7 @@ class SalesView(ctk.CTkFrame):
             "referencia_id": datos[0],
             "nombre": datos[1],
             "precio": float(datos[2]),
-            "cantidad": 1
+            "cantidad": cantidad
         }
 
         self.carrito.append(item)
@@ -207,6 +245,53 @@ class SalesView(ctk.CTkFrame):
 
         self.carrito.append(item)
 
+        self.actualizar_carrito()
+
+    def obtener_item_seleccionado(self):
+
+        seleccionado = self.detalle.focus()
+
+        if not seleccionado:
+            messagebox.showwarning("Venta", "Seleccione un producto o servicio del detalle.")
+            return None
+
+        index = self.detalle.index(seleccionado)
+        if index < 0 or index >= len(self.carrito):
+            return None
+
+        return index
+
+    def editar_item(self):
+
+        index = self.obtener_item_seleccionado()
+
+        if index is None:
+            return
+
+        item = self.carrito[index]
+
+        nueva_cantidad = simpledialog.askinteger(
+            "Editar cantidad",
+            f"Ingrese la nueva cantidad para '{item['nombre']}':",
+            initialvalue=item["cantidad"],
+            minvalue=1
+        )
+
+        if nueva_cantidad is None:
+            return
+
+        item["cantidad"] = nueva_cantidad
+        self.actualizar_carrito()
+
+    def eliminar_item(self):
+
+        index = self.obtener_item_seleccionado()
+
+        if index is None:
+            return
+
+        item = self.carrito.pop(index)
+        messagebox.showinfo("Venta", f"Se eliminó '{item['nombre']}' del detalle.")
         self.actualizar_carrito()
 
     def actualizar_carrito(self):

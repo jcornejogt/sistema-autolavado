@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-FECHA_VENCIMIENTO = (datetime.now().date() + timedelta(days=365)).strftime("%Y-%m-%d")
+FECHA_VENCIMIENTO = (datetime.now().date() + timedelta(days=30)).strftime("%Y-%m-%d")
 
 
 def licencia_valida():

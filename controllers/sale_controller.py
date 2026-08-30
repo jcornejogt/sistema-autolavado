@@ -6,7 +6,7 @@ from models.accesorio import Accesorio
 
 
 COMISION_SERVICIO = 0.40
-COMISION_ACCESORIO = 0.20
+COMISION_ACCESORIO = 0.00
 
 
 class SaleController:

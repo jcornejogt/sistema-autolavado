@@ -26,11 +26,16 @@ class LoginView(ctk.CTkFrame):
 
     def crear_vista(self):
 
+        self.configure(fg_color="#dfeeff")
+
         contenedor = ctk.CTkFrame(
             self,
-            width=350,
-            height=450,
-            corner_radius=15
+            width=360,
+            height=470,
+            corner_radius=20,
+            fg_color="#f8fbff",
+            border_width=1,
+            border_color="#d1e5ff"
         )
 
         contenedor.place(
@@ -59,17 +64,22 @@ class LoginView(ctk.CTkFrame):
         ctk.CTkLabel(
             contenedor,
             text="Sistema Autolavado",
-            font=("Arial", 22, "bold")
+            font=("Arial", 22, "bold"),
+            text_color="#102a43"
         ).pack(pady=(0, 25))
 
         ctk.CTkLabel(
             contenedor,
-            text="Usuario"
+            text="Usuario",
+            text_color="#1f2a44"
         ).pack(anchor="w", padx=45)
 
         self.usuario_entry = ctk.CTkEntry(
             contenedor,
-            width=260
+            width=260,
+            fg_color="#f0f6ff",
+            border_color="#bfd7ff",
+            text_color="#0f172a"
         )
 
         self.usuario_entry.pack(
@@ -79,13 +89,17 @@ class LoginView(ctk.CTkFrame):
 
         ctk.CTkLabel(
             contenedor,
-            text="Contraseña"
+            text="Contraseña",
+            text_color="#1f2a44"
         ).pack(anchor="w", padx=45)
 
         self.password_entry = ctk.CTkEntry(
             contenedor,
             width=260,
-            show="*"
+            show="*",
+            fg_color="#f0f6ff",
+            border_color="#bfd7ff",
+            text_color="#0f172a"
         )
 
         self.password_entry.pack(
@@ -102,6 +116,9 @@ class LoginView(ctk.CTkFrame):
             contenedor,
             text="Iniciar sesión",
             width=260,
+            height=40,
+            fg_color="#1d4ed8",
+            hover_color="#1e40af",
             command=self.iniciar_sesion
         ).pack(pady=5)
 
@@ -110,7 +127,8 @@ class LoginView(ctk.CTkFrame):
         ctk.CTkLabel(
             contenedor,
             text=f"Licencia válida por {dias} días",
-            font=("Arial", 12)
+            font=("Arial", 12),
+            text_color="#4b5563"
         ).pack(pady=(10, 0))
 
         self.usuario_entry.focus()
